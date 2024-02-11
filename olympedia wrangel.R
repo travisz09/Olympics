@@ -8,9 +8,13 @@
 #Load Packages
 library(tidyverse)
 
+#Set WD
+wd <- choose.dir()
+setwd(wd)
+
 #Read data
-olympics_df <- read.csv("Z:/Documents/My Code/Olympics/Data/OlympicsData_Raw.csv")
-athlete_df <- read.csv("Z:/Documents/My Code/Olympics/Data/AthleteData_Raw.csv")
+olympics_df <- read.csv("Data/OlympicsData_Raw.csv")
+athlete_df <- read.csv("Data/AthleteData_Raw.csv")
 
 #Explore data
 head(olympics_df)
@@ -94,14 +98,14 @@ athlete_df <- athlete_df%>%
 unique(athlete_df$Country)
 
 #Run "country codes wiki scrape", skip if already run.
-suppressWarnings(source("C:/Users/travi/Documents/My code/Olympics/country codes wiki scrape.R"))
-iocCodes <- read.csv("Z:/Documents/My Code/Olympics/Data/IOCCodes.csv")
+suppressWarnings(source("country codes wiki scrape.R"))
+iocCodes <- read.csv("Data/IOCCodes.csv")
 
 athlete_df <- athlete_df%>%
   left_join(iocCodes)
 
 #Save
-write.csv(athlete_df, file = "Z:/Documents/My Code/Olympics/Data/AthleteData.csv",
+write.csv(athlete_df, file = "Data/AthleteData.csv",
           row.names = F)
 
 #Clean up
@@ -162,7 +166,7 @@ unique(olympics_df$Event)[668]
 
 unique(olympics_df$Event) #good
 
-write.csv(olympics_df, "Z:/Documents/My Code/Olympics/Data/OlympicsData.csv",
+write.csv(olympics_df, "Data/OlympicsData.csv",
           row.names = F)
 
 #Fix Athlete data, define teams
@@ -229,7 +233,7 @@ individual <- individual%>%
   filter(!is.na(Athlete.ID))
 
 #Save data
-write.csv(individual, "Z:/Documents/My Code/Olympics/Data/OlympicsData_splitTeams.csv")
+write.csv(individual, "Data/OlympicsData_splitTeams.csv")
 
 #Clean up
 rm(df, new_row, row, aID, aIDs, athletes, event, finish,
@@ -262,7 +266,7 @@ missing <- gold_ind%>%
 
 #Manually searched for missing data
 ##Import found data
-found_data <- read.csv("Z:/Documents/My Code/Olympics/Data/missing.csv")
+found_data <- read.csv("Data/missing.csv")
 
 #Drop extraneous columns
 found_data <- found_data%>%
@@ -296,7 +300,7 @@ check <- gold_ind%>%
   group_by(City, State, Country)%>%
   summarise(Count = n())
 
-write.csv(gold_ind, file = "Z:/Documents/My Code/Olympics/Data/GoldWinners.csv",
+write.csv(gold_ind, file = "Data/GoldWinners.csv",
           row.names = F)
 
 gold_country <- gold_ind%>%
@@ -311,8 +315,11 @@ gold_country <- gold_ind%>%
          Country.Long = if_else(Country.Long == "Trinidad and Tobago",
                                 "Trinidad & Tobago", Country.Long))
 
+
+#Run "Geolocate-API.R", skip if already run.
+suppressWarnings(source("Geolocate-API.R"))
 #Read geolocated data
-geo <- read.csv("Z:/Documents/My Code/Olympics/Data/Geo.csv")
+geo <- read.csv("Data/Geo.csv")
 
 #Drop extraneous coluns
 geo <- geo%>%
@@ -322,7 +329,7 @@ gold_ind_geo <- gold_ind%>%
   left_join(geo, by = join_by(City, State, Country))
 
 #Save
-write.csv(gold_ind_geo, file = "Z:/Documents/My Code/Olympics/Data/GoldWinners_Geolocated.csv",
+write.csv(gold_ind_geo, file = "Data/GoldWinners_Geolocated.csv",
           row.names = F)
 
 Cities <- gold_ind_geo%>%
@@ -331,10 +338,12 @@ Cities <- gold_ind_geo%>%
             Golds = sum(Golds), 
             Fract.Golds = sum(Fract.Gold))
 
-write.csv(Cities, file = "Z:/Documents/My Code/Olympics/Data/Cities.csv",
+write.csv(Cities, file = "Data/Cities.csv",
           row.names = F)
+
 #### GRAPHS ####
-source("Z:/Documents/My Code/R Tutorial and Conventions/ggplot theme/ggplot theme.R")
+dir.create(paste(wd, "Graphs", sep ="/"))
+source("ggplot theme.R")
 
 plot <- ggplot(subset(gold_country, Country != "USA"),
                aes(reorder(Country.Long, desc(Athletes)), Athletes))+
@@ -353,5 +362,5 @@ plot <- ggplot(subset(gold_country, Country != "USA"),
         axis.title.y = element_text(size = 24, vjust = 1, hjust = 0.3),
         plot.title = element_text(size = 40))
 plot
-ggsave(plot, path = "Z:/Documents/My Code/Olympics/Graphs",
+ggsave(plot, path = "Graphs",
        filename = "OtherCountries.png", scale = 2)
