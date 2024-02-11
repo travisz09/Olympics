@@ -8,6 +8,9 @@ library("RCurl")
 library("XML")
 library("tidyverse")
 
+#Set WD
+##wd <- choose.dir() #wd should already be set by "olympedia wrangel.R"
+setwd(wd) 
 
 link <- "https://en.wikipedia.org/wiki/List_of_IOC_country_codes"
 
@@ -60,7 +63,7 @@ df <- df%>%
   filter(!is.na(Country.Long))%>%
   mutate(Country.Long = str_remove(Country.Long, pattern = "^\\s"))
 
-write.csv(df, file = "Z:/Documents/My Code/Olympics/Data/IOCCodes.csv",
+write.csv(df, file = "Data/IOCCodes.csv",
           row.names = F)
 
 #Clean up
