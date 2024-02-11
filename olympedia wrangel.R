@@ -98,7 +98,7 @@ athlete_df <- athlete_df%>%
 unique(athlete_df$Country)
 
 #Run "country codes wiki scrape", skip if already run.
-suppressWarnings(source("country codes wiki scrape.R"))
+source("country codes wiki scrape.R")
 iocCodes <- read.csv("Data/IOCCodes.csv")
 
 athlete_df <- athlete_df%>%
@@ -317,7 +317,7 @@ gold_country <- gold_ind%>%
 
 
 #Run "Geolocate-API.R", skip if already run.
-suppressWarnings(source("Geolocate-API.R"))
+source("Geolocate-API.R")
 #Read geolocated data
 geo <- read.csv("Data/Geo.csv")
 
