@@ -4,28 +4,37 @@
 ### Purpose: To geolocate cities for Olympics data.
 
 #### SET UP ####
+## NOTE: You will need your own (free) Rapid API user account to proceed.
+##    Sign up at https://rapidapi.com/auth/sign-up?referral=/apininjas/api/geocoding-by-api-ninjas.
+##    Subscribe to "Geocoding by API-Ninjas".
+##    Locate your Authorization API Key, copy and save in a secure location. Do not share your key.
+
 #Load Packages
 library(httr)
 library(tidyverse)
 
+#Set WD
+setwd(wd)
+
 url <- "https://geocoding-by-api-ninjas.p.rapidapi.com/v1/geocoding"
+key <- "<Your API Key Here!>" #User input required!
 
 #Test case
-queryString <- list(
-  city = "Almonesson Lake",
-  state = "New Jersey",
-  country = ""
-)
+##queryString <- list(
+  ##city = "Almonesson Lake",
+  ##state = "New Jersey",
+  ##country = ""
+##)
 
-response <- VERB("GET", url, query = queryString, 
-                 add_headers('X-RapidAPI-Key' = 'eebc506c98mshc2cae30fc4c5fd1p1d877ajsnc22142de6dd5', 
-                             'X-RapidAPI-Host' = 'geocoding-by-api-ninjas.p.rapidapi.com'), 
-                 content_type("application/octet-stream"))
+##response <- VERB("GET", url, query = queryString, 
+  ##               add_headers('X-RapidAPI-Key' = key, 
+    ##                         'X-RapidAPI-Host' = 'geocoding-by-api-ninjas.p.rapidapi.com'), 
+      ##           content_type("application/octet-stream"))
 
-content(response, "text")
+##content(response, "text")
 
 #Load content
-GoldWinners <- read.csv("Z:/Documents/My Code/Olympics/Data/GoldWinners.csv")
+GoldWinners <- read.csv("Data/GoldWinners.csv")
 
 Cities <- GoldWinners%>%
   group_by(City, State, Country)%>%
@@ -39,7 +48,7 @@ Response <- data.frame(City = as.character(),
                        lon = as.numeric(),
                        Note = as.character())
 
-for (i in c(7:nrow(Cities))) {
+for (i in c(1:nrow(Cities))) {
   city = Cities[i,]$City
   state = Cities[i,]$State
   country = Cities[i,]$Country
@@ -51,7 +60,7 @@ for (i in c(7:nrow(Cities))) {
   )
   
   response <- VERB("GET", url, query = queryString, 
-                   add_headers('X-RapidAPI-Key' = 'eebc506c98mshc2cae30fc4c5fd1p1d877ajsnc22142de6dd5', 
+                   add_headers('X-RapidAPI-Key' = key, 
                                'X-RapidAPI-Host' = 'geocoding-by-api-ninjas.p.rapidapi.com'), 
                    content_type("application/octet-stream"))
   
@@ -98,5 +107,5 @@ Check <- Response%>%
 Bad <- Response%>%
   filter(is.na(lat) | is.na(lon))
 
-write.csv(Response, "Z:/Documents/My Code/Olympics/Data/Geo.csv",
+write.csv(Response, "Data/Geo.csv",
           row.names = F)
