@@ -26,7 +26,7 @@ Additional supporting R code is given in "country codes wiki scrape.R" and "ggpl
 Finishing and cartogrophy was completed in ArcGIS Pro (v3.2.1)[^6]. 
 
 #### Licencing
-Copyright 2024 Travis Zalesky
+Copyright (c) 2024 Travis Zalesky
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
