@@ -14,6 +14,7 @@ library(httr)
 library(tidyverse)
 
 #Set WD
+##wd <- choose.dir() #wd should already be set by "olympedia wrangel.R"
 setwd(wd)
 
 url <- "https://geocoding-by-api-ninjas.p.rapidapi.com/v1/geocoding"
