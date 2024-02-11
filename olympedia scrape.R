@@ -9,6 +9,10 @@ library("RCurl")
 library("XML")
 library("tidyverse")
 
+#Set WD
+wd <- choose.dir()
+setwd(wd)
+
 #### SETUP ####
 # Get list of sub-pages in USA directory (each contains list of Olympic years which the USA has competed in)
 ## Modify url for alternate nations of interest. See olympedia.org.
@@ -139,7 +143,8 @@ df <- df%>%
   tidyr::fill(Event, .direction = "down")#draw missing "Sport" values down from above.
 
 #Save data.
-write.csv(df, file = "Z:/Documents/My Code/Olympics/Data/OlympicsData_Raw.csv",
+dir.create(paste(wd, "Data", sep = "/"))
+write.csv(df, file = "Data/OlympicsData_Raw.csv",
           row.names = F)
 
 #Clean up
@@ -293,5 +298,5 @@ for (i in c(1:length(athlete_links))) {
 }# end athlete page search
 })# end system.time
 
-write.csv(athlete_df, file = "Z:/Documents/My Code/Olympics/Data/AthleteData_Raw.csv",
+write.csv(athlete_df, file = "Data/AthleteData_Raw.csv",
           row.names = F)
